@@ -1,0 +1,48 @@
+version: 2.1
+
+description: >
+  Specifc commands for deploying a csharp service to AWS using Terraform for Lovepop
+
+display:
+  home_url: "https://lovepop.com"
+  source_url: "https://github.com/lovepopcards/orb-service"
+
+orbs:
+  devops: lovepop/common@1.0.1
+
+jobs:
+    lint:
+      executor:
+        name: devops/base-image
+        image: dotnetsdk6_0
+        tag: main.latest
+      steps:
+        - checkout
+        - run: dotnet-format --check
+
+    test:
+      docker:
+        - image: mcr.microsoft.com/dotnet/sdk:6.0
+      steps:
+        - checkout
+        - run: dotnet test
+
+    publish:
+      docker:
+        - image: mcr.microsoft.com/dotnet/sdk:6.0
+      parameters:
+        project:
+          description: "Path to the project file to publish."
+          type: string
+        version-suffix:
+          description: "Value to use as a version suffix when packing the project."
+          type: string
+          default: ""
+      steps:
+        - checkout
+        - run:
+            name: "Pack Project"
+            command: dotnet pack << parameters.project >> -c Release -o out $([ -n "<< parameters.version-suffix >>" ] && echo "--version-suffix << parameters.version-suffix >>")
+        - run:
+            name: "Publish Release(s) on GitHub"
+            command: dotnet nuget push './out/*.nupkg' --source "GitHub" --skip-duplicate
