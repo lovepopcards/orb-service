@@ -8,12 +8,12 @@ display:
   source_url: "https://github.com/lovepopcards/orb-service"
 
 orbs:
-  devops: lovepop/common@1.0.1
+  common: lovepop/common@1.0.1
 
 jobs:
     lint:
       executor:
-        name: devops/base-image
+        name: common/base-image
         image: dotnetsdk6_0
         tag: main.latest
       steps:
