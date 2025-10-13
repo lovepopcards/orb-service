@@ -44,5 +44,8 @@ jobs:
             name: "Pack Project"
             command: dotnet pack << parameters.project >> -c Release -o out $([ -n "<< parameters.version-suffix >>" ] && echo "--version-suffix << parameters.version-suffix >>")
         - run:
+            name: "Add project to NuGet sources"
+            command: dotnet nuget add source "https://nuget.pkg.github.com/lovepopcards/index.json" --name "GitHub"
+        - run:
             name: "Publish Release(s) on GitHub"
-            command: dotnet nuget push './out/*.nupkg' --source "GitHub" --skip-duplicate
+            command: dotnet nuget push "./out/*.nupkg" --source "GitHub" --api-key $GITHUB_TOKEN --skip-duplicate
