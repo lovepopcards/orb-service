@@ -14,7 +14,7 @@ jobs:
     lint:
       executor:
         name: common/base-image
-        image: dotnetsdk8_0
+        image: dotnetsdk9_0
         tag: main.latest
       steps:
         - checkout
@@ -22,14 +22,14 @@ jobs:
 
     test:
       docker:
-        - image: mcr.microsoft.com/dotnet/sdk:8.0
+        - image: mcr.microsoft.com/dotnet/sdk:9.0
       steps:
         - checkout
         - run: dotnet test
 
     publish:
       docker:
-        - image: mcr.microsoft.com/dotnet/sdk:8.0
+        - image: mcr.microsoft.com/dotnet/sdk:9.0
       parameters:
         project:
           description: "Path to the project file to publish."
